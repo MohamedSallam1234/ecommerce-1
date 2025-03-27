@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
 import { CartService } from '../../services/cart.service';
 import { CartComponent } from '../cart/cart.component';
+import { signal } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -13,39 +13,23 @@ import { CartComponent } from '../cart/cart.component';
   standalone: true,
   imports: [IonicModule, CommonModule, RouterLink, CartComponent],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
-  isMenuOpen = false;
-  isCartOpen = false;
-  cartItemsCount = 0;
-  private cartSubscription: Subscription | undefined;
+export class HeaderComponent {
+  isMenuOpen = signal(false);
+  isCartOpen = signal(false);
 
-  constructor(private cartService: CartService) {}
-
-  ngOnInit(): void {
-    this.cartSubscription = this.cartService
-      .getCartItemsCount()
-      .subscribe((count) => {
-        this.cartItemsCount = count;
-      });
-  }
-
-  ngOnDestroy(): void {
-    if (this.cartSubscription) {
-      this.cartSubscription.unsubscribe();
-    }
-  }
+  constructor(public cartService: CartService) {}
 
   toggleMenu(): void {
-    this.isMenuOpen = !this.isMenuOpen;
-    if (this.isMenuOpen) {
-      this.isCartOpen = false;
+    this.isMenuOpen.update((value) => !value);
+    if (this.isMenuOpen()) {
+      this.isCartOpen.set(false);
     }
   }
 
   toggleCart(): void {
-    this.isCartOpen = !this.isCartOpen;
-    if (this.isCartOpen) {
-      this.isMenuOpen = false;
+    this.isCartOpen.update((value) => !value);
+    if (this.isCartOpen()) {
+      this.isMenuOpen.set(false);
     }
   }
 }
