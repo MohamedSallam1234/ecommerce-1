@@ -6,7 +6,7 @@
     <div class="logo" [routerLink]="['/']">
       <img src="assets/icon/logo.svg" alt="Sneakers" />
     </div>
-    <div class="nav-links" [class.show-menu]="isMenuOpen">
+    <div class="nav-links" [class.show-menu]="isMenuOpen()">
       <div class="close-menu" (click)="toggleMenu()">
         <img src="assets/icon/icon-close.svg" alt="Close" />
       </div>
@@ -21,9 +21,11 @@
   <div class="header-right">
     <div class="cart-icon" (click)="toggleCart()">
       <img src="assets/icon/icon-cart.svg" alt="Cart" />
-      <div class="cart-count" *ngIf="cartItemsCount > 0">
-        {{ cartItemsCount }}
+      @if (cartService.cartCount() > 0) {
+      <div class="cart-count">
+        {{ cartService.cartCount() }}
       </div>
+      }
     </div>
     <div class="avatar-container">
       <img
@@ -35,6 +37,6 @@
   </div>
 </div>
 
-<div class="cart-dropdown" [class.show-cart]="isCartOpen">
+<div class="cart-dropdown" [class.show-cart]="isCartOpen()">
   <app-cart></app-cart>
 </div>
