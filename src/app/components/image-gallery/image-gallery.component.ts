@@ -1,5 +1,13 @@
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  signal,
+  inject,
+  PLATFORM_ID,
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 
 @Component({
@@ -15,13 +23,17 @@ export class ImageGalleryComponent {
   @Output() openLightbox = new EventEmitter<number>();
 
   selectedIndex = signal<number>(0);
+  private platformId = inject(PLATFORM_ID);
 
   selectImage(index: number): void {
     this.selectedIndex.set(index);
   }
 
   showLightbox(): void {
-    this.openLightbox.emit(this.selectedIndex());
+    // Only show lightbox on desktop (screen width > 768px)
+    if (isPlatformBrowser(this.platformId) && window.innerWidth > 768) {
+      this.openLightbox.emit(this.selectedIndex());
+    }
   }
 
   nextImage(): void {
